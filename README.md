@@ -23,4 +23,4 @@ Enhance the professional look of your project by following best practices in cod
 
 Feel free to reach out for any questions or collaboration opportunities.
 
-![Project Image](assets/images/project_screenshot.png)
+![Project Image](assets/images/project_screenshot.png.png)
