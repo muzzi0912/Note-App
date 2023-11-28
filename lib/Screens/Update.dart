@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use, file_names, unnecessary_string_interpolations
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, file_names, unnecessary_string_interpolations, use_key_in_widget_constructors
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class UpdateScreen extends StatefulWidget {
-  const UpdateScreen({super.key});
+  const UpdateScreen({Key? key});
 
   @override
   State<UpdateScreen> createState() => _UpdateScreenState();
@@ -14,12 +14,19 @@ class UpdateScreen extends StatefulWidget {
 
 class _UpdateScreenState extends State<UpdateScreen> {
   // Backend
-
+  TextEditingController noteTitleController = TextEditingController();
   TextEditingController noteController = TextEditingController();
 
-  // Backend
   @override
   Widget build(BuildContext context) {
+    // Extract arguments
+    final Map<String, dynamic> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    // Set initial values for controllers
+    noteTitleController.text = arguments['noteTitle'] ?? '';
+    noteController.text = arguments['note'].toString();
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
@@ -42,16 +49,32 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   color: Colors.grey[800], // Input field background color
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: TextFormField(
-                  controller: noteController
-                    ..text = "${Get.arguments['note'].toString()}",
-                  maxLines: null,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: "Update Note",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: InputBorder.none,
-                  ),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: noteTitleController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Note Title",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      controller: noteController,
+                      maxLines: null,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Note",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -63,6 +86,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     .doc(Get.arguments['docId'].toString())
                     .update(
                   {
+                    'noteTitle': noteTitleController.text
+                        .trim(), // Update note title as well
                     'note': noteController.text.trim(),
                   },
                 );

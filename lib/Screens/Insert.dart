@@ -12,9 +12,8 @@ class CreateNoteScreen extends StatefulWidget {
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
   // Backend
-
+  TextEditingController noteTitleController = TextEditingController();
   TextEditingController noteController = TextEditingController();
-
   // Backend
 
   @override
@@ -41,15 +40,32 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                   color: Colors.grey[800], // Input field background color
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: TextFormField(
-                  controller: noteController,
-                  maxLines: null,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: "Note",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: InputBorder.none,
-                  ),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: noteTitleController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Note Title",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      controller: noteController,
+                      maxLines: null,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Note",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -57,18 +73,21 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             ElevatedButton(
               onPressed: () async {
                 // Backend
+                var noteTitle = noteTitleController.text.trim();
                 var note = noteController.text.trim();
 
-                if (note != "") {
+                if (noteTitle.isNotEmpty && note.isNotEmpty) {
                   try {
                     await FirebaseFirestore.instance.collection("notes").add({
+                      "noteTitle": noteTitle,
                       "note": note,
                       "created_at": DateTime.now(),
-                      "updated_at": DateTime.now()
+                      "updated_at": DateTime.now(),
                     });
                     print("Note saved successfully");
 
                     // Clear the form
+                    noteTitleController.clear();
                     noteController.clear();
 
                     // Navigate back to the home screen
@@ -77,7 +96,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                     print("Error: $e");
                   }
                 } else {
-                  print("Note is empty");
+                  print("Note title or note is empty");
                 }
                 // Backend
               },

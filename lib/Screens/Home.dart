@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
         padding: EdgeInsets.all(10.0),
-        color: Colors.grey[900], // Dark background color
+        color: Colors.grey[900],
         child: StreamBuilder(
           stream: FirebaseFirestore.instance.collection("notes").snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -45,9 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            // If there is no error and data is available, display the notes
             if (snapshot.data!.docs.isEmpty) {
-              // No data found
               return Center(
                 child: Lottie.asset('assets/images/not.json'),
               );
@@ -60,14 +58,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
                 var docId = snapshot.data!.docs[index].id;
+                var noteTitle = data['noteTitle'];
 
                 return Card(
-                  color: Colors.grey[800], // Card background color
-                  elevation: 5.0, // Card elevation
+                  color: Colors.grey[800],
+                  elevation: 5.0,
                   margin: EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     title: Text(
-                      data['note'],
+                      noteTitle,
                       style: TextStyle(
                         color: Colors.white,
                         overflow: TextOverflow.ellipsis,
@@ -80,8 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             Get.to(
                               () => UpdateScreen(),
-                              arguments: {'note': data['note'], 'docId': docId},
-                            );
+                              arguments: {
+                                'note': data['note'],
+                                'noteTitle':
+                                    noteTitle, // Pass noteTitle to UpdateScreen
+                                'docId': docId,
+                              },
+                            )!
+                                .then((value) {
+                              // Refresh the data on the HomeScreen after updating
+                              setState(() {});
+                            });
                           },
                           child: Icon(
                             Icons.edit_document,
@@ -91,9 +99,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           width: 10.0,
                         ),
-                        Icon(
-                          Icons.delete_rounded,
-                          color: Colors.red,
+                        GestureDetector(
+                          onTap: () async {
+                            await FirebaseFirestore.instance
+                                .collection("notes")
+                                .doc(docId)
+                                .delete();
+                            // Refresh the data on the HomeScreen after deletion
+                            setState(() {});
+                          },
+                          child: Icon(
+                            Icons.delete_rounded,
+                            color: Colors.red,
+                          ),
                         ),
                       ],
                     ),
