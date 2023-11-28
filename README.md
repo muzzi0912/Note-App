@@ -21,4 +21,4 @@ Feel free to reach out for any questions or collaboration opportunities.
 
 ![Project Image](assets/images/LottieAnimation.png)
 ![Project Image](assets/images/Home.png)
-![Project Image](assets/images/project_screenshot.png)
+![Project Image](assets/images/Add.png)

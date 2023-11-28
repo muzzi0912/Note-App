@@ -1,22 +1,23 @@
-// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, file_names, deprecated_member_use, unused_local_variable, avoid_print, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, file_names, unnecessary_string_interpolations
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
-class CreateNoteScreen extends StatefulWidget {
-  const CreateNoteScreen({Key? key}) : super(key: key);
+class UpdateScreen extends StatefulWidget {
+  const UpdateScreen({super.key});
 
   @override
-  State<CreateNoteScreen> createState() => _CreateNoteScreenState();
+  State<UpdateScreen> createState() => _UpdateScreenState();
 }
 
-class _CreateNoteScreenState extends State<CreateNoteScreen> {
+class _UpdateScreenState extends State<UpdateScreen> {
   // Backend
 
   TextEditingController noteController = TextEditingController();
 
   // Backend
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +43,12 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: TextFormField(
-                  controller: noteController,
+                  controller: noteController
+                    ..text = "${Get.arguments['note'].toString()}",
                   maxLines: null,
                   style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    hintText: "Note",
+                    hintText: "Update Note",
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                   ),
@@ -56,30 +58,26 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
-                // Backend
-                var note = noteController.text.trim();
+                await FirebaseFirestore.instance
+                    .collection("notes")
+                    .doc(Get.arguments['docId'].toString())
+                    .update(
+                  {
+                    'note': noteController.text.trim(),
+                  },
+                );
 
-                if (note != "") {
-                  try {
-                    await FirebaseFirestore.instance.collection("notes").add({
-                      "note": note,
-                      "created_at": DateTime.now(),
-                      "updated_at": DateTime.now()
-                    });
-                    print("Note saved successfully");
+                Fluttertoast.showToast(
+                  msg: "Note updated successfully!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
 
-                    // Clear the form
-                    noteController.clear();
-
-                    // Navigate back to the home screen
-                    Navigator.pop(context);
-                  } catch (e) {
-                    print("Error: $e");
-                  }
-                } else {
-                  print("Note is empty");
-                }
-                // Backend
+                // Navigate back
+                Get.back();
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.black, // Button color

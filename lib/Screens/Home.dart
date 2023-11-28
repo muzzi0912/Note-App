@@ -1,12 +1,13 @@
 // Import necessary packages
 
-// ignore_for_file: file_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: file_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:note_app/Screens/Insert.dart';
+import 'package:note_app/Screens/Update.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -52,10 +53,14 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (BuildContext context, int index) {
+                DocumentSnapshot document = snapshot.data!.docs[index];
                 Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
+                var docId = snapshot.data!.docs[index].id;
+
                 return Card(
                   color: Colors.grey[800], // Card background color
                   elevation: 5.0, // Card elevation
@@ -71,9 +76,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.edit_document,
-                          color: Colors.grey[400],
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              () => UpdateScreen(),
+                              arguments: {'note': data['note'], 'docId': docId},
+                            );
+                          },
+                          child: Icon(
+                            Icons.edit_document,
+                            color: Colors.grey[400],
+                          ),
                         ),
                         SizedBox(
                           width: 10.0,
@@ -86,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 );
-              }).toList(),
+              },
             );
           },
         ),
