@@ -18,7 +18,3 @@ For detailed guidance on Flutter development, refer to the [online documentation
 **MUZAMMIL**
 
 Feel free to reach out for any questions or collaboration opportunities.
-
-![Project Image](assets/images/LottieAnimation.png)
-![Project Image](assets/images/Home.png)
-![Project Image](assets/images/Add.png)
