@@ -13,14 +13,12 @@ If this is your first Flutter project, consider checking out these resources:
 
 For detailed guidance on Flutter development, refer to the [online documentation](https://docs.flutter.dev/). It provides tutorials, samples, and a comprehensive API reference.
 
-## Professional Look
-
-Enhance the professional look of your project by following best practices in code organization, documentation, and design principles.
-
 ## Author
 
 **MUZAMMIL**
 
 Feel free to reach out for any questions or collaboration opportunities.
 
-![Project Image](assets/images/project_screenshot.png.png)
+![Project Image](assets/images/LottieAnimation.png)
+![Project Image](assets/images/Home.png)
+![Project Image](assets/images/project_screenshot.png)

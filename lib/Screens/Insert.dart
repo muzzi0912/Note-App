@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, file_names, deprecated_member_use, unused_local_variable, avoid_print
+// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, file_names, deprecated_member_use, unused_local_variable, avoid_print, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +67,12 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                       "updated_at": DateTime.now()
                     });
                     print("Note saved successfully");
+
+                    // Clear the form
+                    noteController.clear();
+
+                    // Navigate back to the home screen
+                    Navigator.pop(context);
                   } catch (e) {
                     print("Error: $e");
                   }
